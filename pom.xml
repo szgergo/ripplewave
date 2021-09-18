@@ -2,15 +2,29 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-    <modelVersion>4.0.0</modelVersion>
 
+    <parent>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-parent</artifactId>
+        <version>2.5.4</version>
+        <relativePath/>
+    </parent>
+
+
+    <modelVersion>4.0.0</modelVersion>
     <groupId>org.ripplewave</groupId>
     <artifactId>ripplewave</artifactId>
     <packaging>pom</packaging>
     <version>0.0.1-SNAPSHOT</version>
+
     <modules>
         <module>ripplewave-build</module>
         <module>ripplewave-build-tools</module>
+        <module>ripplewave-vcs-web</module>
+        <module>ripplewave-vcs-data</module>
+        <module>ripplewave-common</module>
+        <module>ripplewave-vcs-api</module>
+        <module>ripplewave-vcs-processor</module>
     </modules>
 
     <properties>
@@ -26,12 +40,98 @@
         <git.commit.id.maven.plugin.version>5.0.0</git.commit.id.maven.plugin.version>
         <sonar.organization>szgergo</sonar.organization>
         <sonar.host.url>https://sonarcloud.io</sonar.host.url>
+
+
+        <!-- sonarCloud integration -->
+        <sonar.projectKey>szgergo_ripplewave</sonar.projectKey>
+        <sonar.organization>szgergo</sonar.organization>
+        <sonar.host.url>https://sonarcloud.io</sonar.host.url>
+
+        <sonar.core.codeCoveragePlugin>jacoco</sonar.core.codeCoveragePlugin>
+        <sonar.coverage.jacoco.xmlReportPaths>${project.build.directory}/site/jacoco-aggregate/jacoco.xml
+        </sonar.coverage.jacoco.xmlReportPaths>
+        <sonar.projectVersion>${project.version}</sonar.projectVersion>
+
+        <postgresql.version>42.2.23</postgresql.version>
+        <org.eclipse.jgit.version>5.13.0.202109080827-r</org.eclipse.jgit.version>
+        <lombok.version>1.18.20</lombok.version>
+        <maven-compiler-plugin.version>3.8.1</maven-compiler-plugin.version>
     </properties>
+
+
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>org.ripplewave</groupId>
+                <artifactId>ripplewave-vcs-web</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.ripplewave</groupId>
+                <artifactId>ripplewave-vcs-data</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.ripplewave</groupId>
+                <artifactId>ripplewave-common</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.ripplewave</groupId>
+                <artifactId>ripplewave-vcs-api</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.ripplewave</groupId>
+                <artifactId>ripplewave-vcs-processor</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.eclipse.jgit</groupId>
+                <artifactId>org.eclipse.jgit</artifactId>
+                <version>${org.eclipse.jgit.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.eclipse.jgit</groupId>
+                <artifactId>org.eclipse.jgit.ssh.jsch</artifactId>
+                <version>${org.eclipse.jgit.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.postgresql</groupId>
+                <artifactId>postgresql</artifactId>
+                <version>${postgresql.version}</version>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <version>${lombok.version}</version>
+            <scope>provided</scope>
+        </dependency>
+    </dependencies>
 
 
     <build>
         <pluginManagement>
             <plugins>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-compiler-plugin</artifactId>
+                    <version>${maven-compiler-plugin.version}</version>
+                    <configuration>
+                        <release>11</release>
+                        <annotationProcessorPaths>
+                            <path>
+                                <groupId>org.projectlombok</groupId>
+                                <artifactId>lombok</artifactId>
+                                <version>${lombok.version}</version>
+                            </path>
+                        </annotationProcessorPaths>
+                    </configuration>
+                </plugin>
                 <plugin>
                     <groupId>io.github.git-commit-id</groupId>
                     <artifactId>git-commit-id-maven-plugin</artifactId>
